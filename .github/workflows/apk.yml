@@ -1,84 +1,11 @@
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.4
 
-name: Build APK
-
-on:
-  push:
-  workflow_dispatch:
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-
-      - name: Setup Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v4
-
-      - name: Run project setup
-        run: sh setup.sh
-
-      - name: Accept Android SDK licenses
-        run: yes | sdkmanager --licenses
-
-      - name: Remove corrupted NDK download
-        run: |
-          sdk="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
-          rm -rf "$sdk/.downloadIntermediates"
-          rm -rf "$sdk/.temp"
-          rm -rf "$sdk/ndk/28.2.13676358"
-
-      - name: Install NDK with retries
-        shell: bash
-        run: |
-          set -u
-          sdk="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
-
-          for attempt in 1 2 3; do
-            echo "NDK installation attempt $attempt of 3"
-
-            if sdkmanager \
-              --sdk_root="$sdk" \
-              --install "ndk;28.2.13676358"; then
-              echo "NDK installation succeeded"
-              exit 0
-            fi
-
-            echo "Installation failed; cleaning partial download"
-            rm -rf "$sdk/.downloadIntermediates"
-            rm -rf "$sdk/.temp"
-            rm -rf "$sdk/ndk/28.2.13676358"
-
-            sleep 10
-          done
-
-          echo "::error::NDK installation failed after 3 attempts"
-          exit 1
-
-      - name: Get Flutter dependencies
-        run: flutter pub get
-
-      - name: Check Flutter code
-        run: flutter analyze
-
-      - name: Build APK Release
-        run: flutter build apk --release
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: MorseMaster-APK
-          path: build/app/outputs/flutter-apk/app-release.apk
-          if-no-files-found: error
+flutter_launcher_icons:
+  android: true
+  image_path: "assets/icon/morse_icon.png"
+  adaptive_icon_background: "#24164D"
+  adaptive_icon_foreground: "assets/icon/morse_icon.png"
