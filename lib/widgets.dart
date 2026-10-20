@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:morse_master/core/engine.dart';
-import 'package:morse_master/core/morse.dart';
 import 'dart:io';
 import 'package:android_intent_plus/android_intent.dart';
 
@@ -28,7 +26,7 @@ Widget narrBox() => ValueListenableBuilder<(String, int, int)>(
         final t = v.$1, s = v.$2.clamp(0, t.length), e = v.$3.clamp(s, t.length);
         return Container(
           width: double.infinity, padding: const EdgeInsets.all(10), margin: const EdgeInsets.symmetric(vertical: 8),
-          decoration: BoxDecoration(color: gold.withOpacity(.2), borderRadius: BorderRadius.circular(8)),
+          decoration: BoxDecoration(color: gold.withValues(alpha: .2), borderRadius: BorderRadius.circular(8)),
           child: Text.rich(TextSpan(children: [TextSpan(text: t.substring(0, s)), TextSpan(text: t.substring(s, e), style: const TextStyle(backgroundColor: Color(0x99E0A800), fontWeight: FontWeight.bold)), TextSpan(text: t.substring(e))])),
         );
       },
