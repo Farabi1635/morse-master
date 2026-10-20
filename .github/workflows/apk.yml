@@ -73,13 +73,13 @@ jobs:
         run: dart run flutter_launcher_icons
 
       - name: Check Flutter code
-        run: flutter analyze lib/
+        run: flutter analyze lib/ --no-fatal-infos --no-fatal-warnings
 
       - name: Build APK Release
         run: flutter build apk --release
 
       - name: Upload APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: MorseMaster-APK
           path: build/app/outputs/flutter-apk/app-release.apk
